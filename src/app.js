@@ -1,5 +1,5 @@
 import { Auth, getUser } from './auth';
-import { getUserFragments, postFragment } from './api';
+import { getUserFragments, postFragment, getFragmentById, getFragmentByIdInfo } from './api';
 
 async function init() {
   // Get our UI elements
@@ -9,15 +9,21 @@ async function init() {
   // Action to be performed on the Fragment (Get, Create, Delete)
   const fragmentAction = document.querySelector('.fragment-action');
   // List of current Fragments (Get, Delete)
-  const fragmentList = document.querySelector('.select-fragment');
+  const selectFragment = document.querySelector('.select-fragment');
   // Form to create a new Fragment
   const fragmentForm = document.querySelector('.create-fragment-form');
+  // Select List containing id and type of fragment
+  const selectListFragments = document.querySelector('.list-of-fragments');
   // DIV containing fragment manipulation. Add HTML programmatically if user is logged in
   const divFragmentForm = document.querySelector('.form');
   // File uploader
   const fileUpload = document.querySelector('#file-upload-input');
   // Content-type selected
   const typeUpload = document.querySelector('#content-type-form');
+  // List of current fragments
+  let fragmentList = document.querySelector('.select-list-fragments');
+  // Div for the new Fragment to display
+  const showFragment = document.querySelector('.show-fragment');
 
   // Wire up event handlers to deal with login and logout.
   loginBtn.onclick = () => {
@@ -52,23 +58,33 @@ async function init() {
   // Disable the Login button
   loginBtn.disabled = true;
 
-    // Every time an item is selected from the list, function will trigger with
+  // Every time an item is selected from the list, function will trigger with
   // event holding properties of the change (i.e, selected value)
   fragmentAction.onchange = async (event) => {
     if(event.target.value === ''){
-      fragmentList.hidden=true;
+      selectFragment.hidden=true;
       fragmentForm.hidden=true;
     }else if(event.target.value == 'create'){
       // Hide List, we are creating a new Fragment
-      fragmentList.hidden=true;
+      selectFragment.hidden=true;
       fragmentForm.hidden=false;
     }else{
       // Show List
-      fragmentList.hidden=false;
+      selectFragment.hidden=false;
       fragmentForm.hidden=true;
-      if(event.target.value == 'get'){
-        await getUserFragments(user, 1);
-      }
+     // if(event.target.value == 'get'){ //
+      let fragmentData = await getUserFragments(user, 1);
+      fragmentData.data.fragments.forEach(element => {
+          let option = document.createElement('option');
+          
+          option.text=`${element.type} - ${element.id}`
+          option.value=JSON.stringify({ id: element.id, type:element.type });
+
+          fragmentList.appendChild(option);
+        });
+      //}//
+
+
     }
   }
   fileUpload.addEventListener('change', handleChange);
@@ -82,8 +98,6 @@ async function init() {
     for(i=1; i < uploadedFiles.length; i++){
       fileNames += ", " + uploadedFiles[i].name;
     }
-    let fragment;
-
     const reader = new FileReader();
 
     if(!confirm(
@@ -111,6 +125,27 @@ async function init() {
       alert('The following files could not be uploaded, TYPE NOT MATCHING:\n' + typesNonMatching);
     }
   }
+  // If one of the fragments is selected from the list, show details
+  fragmentList.addEventListener('change', async (evt) => {
+    evt.preventDefault();
+    try{
+      // Clean content
+      showFragment.innerText = '';
+      const fragmentDetails = JSON.parse(evt.target.value);
+      console.log(fragmentDetails);
+      const showFragmentData = await getFragmentById(user, fragmentDetails.id);
+      const fragmentMetadata = await getFragmentByIdInfo(user, fragmentDetails.id); 
+
+      console.log(fragmentMetadata);
+
+      showFragment.append(JSON.stringify(fragmentMetadata));
+      showFragment.append(JSON.stringify(showFragmentData));
+
+    }catch(err){
+      throw new Error("Couldn't display selected Fragment " + err)
+    }
+    
+  })
 
   // Do an authenticated req to the fragments API server and log the result
   let results = getUserFragments(user);

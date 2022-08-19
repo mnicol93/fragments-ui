@@ -23,11 +23,22 @@
           <option value="create">Create New Fragment</option>
           <option value="get">Get Fragment</option>
           <option value="delete">Delete Fragment</option>
+          <option value="update">Update Fragment</option>
         </select>
       </section>
       <!-- If Get or Delete, show this form -->
       <section class="select-fragment" hidden="true">
         <h3>List of Fragments</p>
+          <div class="list-of-fragments">
+            <!-- Programmatically display list of fragments -->
+            <label for="select-list-fragments">Select a fragment</label>
+            <select class="select-list-fragments" name="select-list-fragments">
+              <!-- Programmatically display list of fragments -->
+            </select>
+            <div class="show-fragment">
+
+            </div>
+          </div>
       </section>
       <!-- If Creating New Fragment, show this form-->
       <section class="create-fragment-form" hidden="true">
@@ -39,6 +50,10 @@
             <option value="text/markdown">text/markdown</option>
             <option value="text/html">text/html</option>
             <option value="application/json">application/json</option>
+            <option value="image/gif">image/gif</option>
+            <option value="image/jpeg">image/jpeg</option>
+            <option value="image/png">image/png</option>
+            <option value="image/webp">image/webp</option>
           </select>
           <label for="file-upload-input" tabindex="0">Upload a file:
             <input 
@@ -48,9 +63,9 @@
               multiple
             >
           </label>
-          <button type="submit" id="submit-btn">Submit</button>
         </form>
       </section>
+      <button type="submit" id="submit-btn">Submit</button>
     </div>
   </body>
 </html>
