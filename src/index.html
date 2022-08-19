@@ -14,5 +14,43 @@
     <section hidden id="user">
       <h2>Hello <span class="username"></span>!</h2>
     </section>
+    <div class="form" hidden="true">
+      <!-- Select action to complete the form -->
+      <section class="fragment-action">
+        <label for="action-list">Select Fragment Action</label>
+        <select class="action-list" id="action-list" name="action-list">
+          <option selected disabled>Select Option</option>
+          <option value="create">Create New Fragment</option>
+          <option value="get">Get Fragment</option>
+          <option value="delete">Delete Fragment</option>
+        </select>
+      </section>
+      <!-- If Get or Delete, show this form -->
+      <section class="select-fragment" hidden="true">
+        <h3>List of Fragments</p>
+      </section>
+      <!-- If Creating New Fragment, show this form-->
+      <section class="create-fragment-form" hidden="true">
+        <h3>Form for Fragments</h3>
+        <form class="new-fragment">
+          <label for="type">Fragment Type:</label>
+          <select id="content-type-form" name="content-type-form">
+            <option value="text/plain">text/plain</option>
+            <option value="text/markdown">text/markdown</option>
+            <option value="text/html">text/html</option>
+            <option value="application/json">application/json</option>
+          </select>
+          <label for="file-upload-input" tabindex="0">Upload a file:
+            <input 
+              type="file" 
+              name="file-upload-input" 
+              id="file-upload-input"
+              multiple
+            >
+          </label>
+          <button type="submit" id="submit-btn">Submit</button>
+        </form>
+      </section>
+    </div>
   </body>
 </html>
